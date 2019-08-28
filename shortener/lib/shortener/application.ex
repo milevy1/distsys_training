@@ -16,6 +16,7 @@ defmodule Shortener.Application do
     Supervisor.start_link(children, opts)
   end
 
+  # Default PORT == 4000, override with PORT=4001
   defp port do
     name = Node.self()
 

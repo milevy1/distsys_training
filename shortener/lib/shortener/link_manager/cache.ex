@@ -8,6 +8,11 @@ defmodule Shortener.LinkManager.Cache do
 
   def lookup(cache \\ __MODULE__, key) do
     # TODO - Do lookup here
+
+    case :ets.lookup(__MODULE__, key) do
+      [] -> {:error, :not_found}
+      [{_key, value}] -> {:ok, value}
+    end
   end
 
   def insert(cache \\ __MODULE__, key, value) do
@@ -24,16 +29,21 @@ defmodule Shortener.LinkManager.Cache do
 
   def init(args) do
     # TODO - Replace nil with real table
+    :ets.new(__MODULE__, [:set, :public, :named_table])
+
     {:ok, %{}}
   end
 
   def handle_cast({:insert, key, value}, data) do
     # TODO - Build cache insert
+
     {:noreply, data}
   end
 
   def handle_call({:insert, key, value}, _from, data) do
     # TODO - Insert the key into the table
+    :ets.insert(__MODULE__, {key, value})
+
     {:reply, :ok, data}
   end
 
