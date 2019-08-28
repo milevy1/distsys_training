@@ -68,6 +68,7 @@ defmodule PingPongTest do
     spawn(fn ->
       GenServer.call({Consumer, n1}, :crash)
     end)
+    :timer.sleep(200)
 
     for n <- nodes do
       eventually(fn ->

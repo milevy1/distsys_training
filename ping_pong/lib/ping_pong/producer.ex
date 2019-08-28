@@ -27,15 +27,17 @@ defmodule PingPong.Producer do
 
   def handle_call(:send_ping, _from, data) do
     # TODO - Send a ping to all consumer processes
-    GenServer.abcast(Consumer, {:ping, 1, Node.self})
+    current = data.current + 1
+    GenServer.abcast(Consumer, {:ping, current, Node.self()})
 
-    {:reply, :ok, %{data | current: data.current+1}}
+    {:reply, :ok, %{data | current: current}}
   end
 
   def handle_call(:get_counts, _from, data) do
     # TODO - Get the count from each consumer
-    map = %{}
-    {:reply, map, data}
+    {results, _bad_results} = GenServer.multi_call(Consumer, :total_pings)
+
+    {:reply, Map.new(results), data}
   end
 
   # Don't remove me :)
