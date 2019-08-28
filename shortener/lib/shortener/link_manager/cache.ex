@@ -29,9 +29,9 @@ defmodule Shortener.LinkManager.Cache do
 
   def init(args) do
     # TODO - Replace nil with real table
-    :ets.new(__MODULE__, [:set, :public, :named_table])
+    ets = :ets.new(__MODULE__, [:set, :public, :named_table])
 
-    {:ok, %{}}
+    {:ok, %{table: ets}}
   end
 
   def handle_cast({:insert, key, value}, data) do

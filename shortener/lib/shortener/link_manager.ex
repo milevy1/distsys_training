@@ -24,16 +24,29 @@ defmodule Shortener.LinkManager do
 
   def create(url) do
     short_code = generate_short_code(url)
+    Cache.insert(short_code, url)
+    # Add to cache and storage
+    Storage.set(short_code, url)
 
     {:ok, short_code}
   end
 
   def lookup(short_code) do
-    Storage.get(short_code)
+    case Cache.lookup(short_code) do
+      {:error, :not_found} ->
+        case Storage.get(short_code) do
+          {:ok, url} ->
+            Cache.insert(short_code, url)
+            {:ok, url}
+          _ -> {:error, :not_found}
+        end
+      {:ok, url} -> {:ok, url}
+    end
   end
 
   def remote_lookup(short_code) do
     # TODO - Do a remote lookup
+    # HINT: Use Task.Supervisor here
   end
 
   def generate_short_code(url) do
