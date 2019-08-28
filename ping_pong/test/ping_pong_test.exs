@@ -52,6 +52,7 @@ defmodule PingPongTest do
   end
 
   test "producer can catch up crashed consumers", %{nodes: nodes} do
+    # Add sleep to force test to fail due to race condition
     [n1, _n2] = nodes
 
     assert :ok = Producer.send_ping()

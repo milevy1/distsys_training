@@ -27,6 +27,8 @@ defmodule PingPong.Producer do
 
   def handle_call(:send_ping, _from, data) do
     # TODO - Send a ping to all consumer processes
+    GenServer.abcast(Consumer, {:ping, 1, Node.self})
+
     {:reply, :ok, %{data | current: data.current+1}}
   end
 
@@ -46,4 +48,3 @@ defmodule PingPong.Producer do
     {:noreply, data}
   end
 end
-
