@@ -36,6 +36,7 @@ defmodule Shortener.LinkManager.Cache do
 
   def handle_cast({:insert, key, value}, data) do
     # TODO - Build cache insert
+    :ets.insert(__MODULE__, {key, value})
 
     {:noreply, data}
   end
